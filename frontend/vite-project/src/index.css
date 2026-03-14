@@ -1,0 +1,109 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg-primary: #0a0a0f;
+  --color-bg-secondary: #111118;
+  --color-bg-card: #16161f;
+  --color-bg-elevated: #1e1e2a;
+
+  --color-border-default: rgba(255, 255, 255, 0.07);
+  --color-border-bright: rgba(255, 255, 255, 0.14);
+
+  --color-text-primary: #f0f0f8;
+  --color-text-secondary: #8a8aa0;
+  --color-text-muted: #5a5a70;
+
+  --color-accent-blue: #4f8fff;
+  --color-accent-violet: #9b6dff;
+  --color-accent-green: #3ecf8e;
+  --color-accent-orange: #ff8c42;
+  --color-accent-red: #ff5c5c;
+  --color-accent-yellow: #ffd166;
+
+  --font-sans: "DM Sans", sans-serif;
+  --font-heading: "Syne", sans-serif;
+
+  --radius-standard: 12px;
+  --radius-large: 18px;
+
+  --animate-fade-in: fadeIn 0.4s ease-out forwards;
+  --animate-fade-up: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-bg-primary);
+    color: var(--color-text-primary);
+    font-family: var(--font-sans);
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    font-weight: 600;
+  }
+}
+
+@layer utilities {
+  .bg-primary-gradient {
+    background: linear-gradient(135deg, var(--color-accent-blue), var(--color-accent-violet));
+  }
+  .text-gradient {
+    background: linear-gradient(135deg, var(--color-accent-blue), var(--color-accent-violet));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .glass-panel {
+    background: rgba(22, 22, 31, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--color-border-default);
+  }
+  .hover-lift {
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  }
+  .hover-lift:hover {
+    transform: translateY(-2px);
+  }
+  
+  /* Form Inputs Focus Ring - rgba(79,143,255,0.12) */
+  .focus-ring-custom {
+    @apply focus:outline-none focus:ring-2 focus:ring-[#4f8fff]/30 focus:border-[#4f8fff]/50 transition-all;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Custom Scrollbar - thin, subtle for dark theme */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
