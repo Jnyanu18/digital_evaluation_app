@@ -4,7 +4,6 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 const cookieParser = require('cookie-parser');
-const connectToDb = require('./db/db');
 const adminRoutes = require('./routes/adminRoutes');
 const studentRoutes = require('./routes/studentRoutes');
 const teacherRoutes = require('./routes/teacherRoutes');
@@ -15,8 +14,6 @@ const questionRoutes = require('./routes/questionRoute')
 const examRoutes = require('./routes/examRoutes.js')
 const subjectRoute = require('./routes/subjectRoute.js')
 const sectionRoutes = require('./routes/sectionRoutes.js')
-
-connectToDb();
 
 app.use(cors({
     origin: [
