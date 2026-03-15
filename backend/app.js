@@ -34,15 +34,15 @@ app.get('/', (req, res) => {
     res.send('Hello World');
 });
 
-app.use('/admin', adminRoutes);
-app.use('/teacher', teacherRoutes);
-app.use('/student', studentRoutes);
-app.use('/answerpaper', answerpaperRoutes);
-app.use('/questionPaper',questionPaperRoutes);
-app.use('/marks',marksRoutes);
-app.use('/question',questionRoutes);
-app.use('/exam',examRoutes);
-app.use('/subject',subjectRoute);
-app.use('/section', sectionRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/teacher', teacherRoutes);
+app.use('/api/student', studentRoutes);
+app.use('/api/answerpaper', answerpaperRoutes);
+app.use('/api/questionPaper',questionPaperRoutes);
+app.use('/api/marks',marksRoutes);
+app.use('/api/question',questionRoutes);
+app.use('/api/exam',examRoutes);
+app.use('/api/subject',subjectRoute);
+app.use('/api/section', sectionRoutes);
 
 module.exports = app;

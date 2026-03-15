@@ -1,0 +1,9 @@
+{
+  "name": "digital-evaluation-system",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "postinstall": "cd backend && npm install",
+    "build": "cd frontend/vite-project && npm install && npm run build"
+  }
+}
