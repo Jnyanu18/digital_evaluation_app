@@ -116,12 +116,6 @@ const AdminLogin = () => {
           </form>
 
           <div className="mt-8 pt-6 border-t border-[--color-border-default] space-y-4">
-            <p className="text-center text-sm text-[--color-text-muted]">
-              Don't have an auth token?{' '}
-              <Link to="/admin/signup" className="text-[--color-accent-violet] hover:underline font-medium">
-                Request Access
-              </Link>
-            </p>
             <div className="flex gap-3 mt-4">
               <Link to="/student/login" className="flex-1">
                 <Button variant="secondary" size="sm" fullWidth>Student Login</Button>

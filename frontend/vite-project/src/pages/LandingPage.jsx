@@ -1,18 +1,36 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { FiUser, FiBookOpen, FiShield } from "react-icons/fi";
+import React, { useState, useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { FiUser, FiBookOpen, FiShield, FiArrowRight, FiCheckCircle } from "react-icons/fi";
+import axios from "axios";
+import { useToast } from "../hooks/useToast";
+import { StudentDataContext } from "../context/StudentContext";
+import { TeacherDataContext } from "../context/TeacherContext";
+import { AdminDataContext } from "../context/AdminContext";
 import { GlassCard } from "../components/ui/Card";
 import AnimatedPage from "../components/AnimatedPage";
 import { motion } from "framer-motion";
 
 const LandingPage = () => {
+  const navigate = useNavigate();
+  const addToast = useToast();
+  const [loadingRole, setLoadingRole] = useState(null);
+
+  const { setStudent } = useContext(StudentDataContext);
+  const { setTeacher } = useContext(TeacherDataContext);
+  const { setAdmin } = useContext(AdminDataContext);
+
   const roles = [
     {
       title: "Student Portal",
       description: "Access your exams, view subjects, and review evaluated answer sheets.",
       icon: <FiUser className="w-8 h-8" />,
       loginPath: "/student/login",
-      signupPath: "/student/signup",
+      demoUrl: "/student/login",
+      demoEmail: "student@demo.com",
+      demoPass: "student123",
+      dashboardPath: "/studentDashboard",
+      contextSetter: setStudent,
+      contextField: "student",
       color: "text-[--color-accent-blue]",
       bg: "bg-[--color-accent-blue]/10",
       border: "border-[--color-accent-blue]/20",
@@ -23,7 +41,12 @@ const LandingPage = () => {
       description: "Manage assigned papers, evaluate student submissions, and update marks.",
       icon: <FiBookOpen className="w-8 h-8" />,
       loginPath: "/teacher/login",
-      signupPath: "/teacher/signup",
+      demoUrl: "/teacher/login",
+      demoEmail: "teacher@demo.com",
+      demoPass: "teacher123",
+      dashboardPath: "/teacherDashboard",
+      contextSetter: setTeacher,
+      contextField: "teacher",
       color: "text-[--color-accent-orange]",
       bg: "bg-[--color-accent-orange]/10",
       border: "border-[--color-accent-orange]/20",
@@ -34,13 +57,51 @@ const LandingPage = () => {
       description: "Oversee the platform, manage exams, and analyze evaluation metrics.",
       icon: <FiShield className="w-8 h-8" />,
       loginPath: "/admin/login",
-      signupPath: "/admin/signup",
+      demoUrl: "/admin/login",
+      demoEmail: "admin@demo.com",
+      demoPass: "admin123",
+      dashboardPath: "/adminDashboard",
+      contextSetter: setAdmin,
+      contextField: "admin",
       color: "text-[--color-accent-violet]",
       bg: "bg-[--color-accent-violet]/10",
       border: "border-[--color-accent-violet]/20",
       hoverRing: "group-hover:ring-[--color-accent-violet]/30"
     }
   ];
+
+  const handleDemoLogin = async (role) => {
+    setLoadingRole(role.title);
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}${role.demoUrl}`, {
+        email: role.demoEmail,
+        password: role.demoPass
+      });
+
+      if (response.status === 200) {
+        const data = response.data;
+        role.contextSetter(data[role.contextField]);
+        localStorage.setItem("token", data.token);
+        
+        addToast({ 
+          title: "Demo Active", 
+          description: `Logged in as ${role.title} Demo.`, 
+          status: "success" 
+        });
+        
+        navigate(role.dashboardPath);
+      }
+    } catch (error) {
+      console.error(`Demo login failed for ${role.title}:`, error);
+      addToast({ 
+        title: "Demo Login Failed", 
+        description: "Please ensure the backend is running and you have run 'npm run seed'.", 
+        status: "error" 
+      });
+    } finally {
+      setLoadingRole(null);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[--color-bg-primary] text-[--color-text-primary] flex flex-col relative overflow-hidden">
@@ -93,7 +154,7 @@ const LandingPage = () => {
         </div>
 
         {/* Roles Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-5xl">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-5xl mb-24">
           {roles.map((role, index) => (
             <motion.div 
                key={index}
@@ -113,20 +174,71 @@ const LandingPage = () => {
                   </p>
                   
                   <div className="flex flex-col w-full gap-3 mt-auto">
+                     <button 
+                       onClick={() => handleDemoLogin(role)}
+                       disabled={loadingRole !== null}
+                       className={`w-full py-3 rounded-lg font-semibold transition-all duration-300 ${role.bg} ${role.color} hover:bg-opacity-20 flex items-center justify-center gap-2`}
+                     >
+                        {loadingRole === role.title ? (
+                          <div className="w-5 h-5 border-2 border-inherit border-t-transparent rounded-full animate-spin"></div>
+                        ) : (
+                          "Try Demo Account"
+                        )}
+                     </button>
                      <Link to={role.loginPath} className="w-full">
-                        <button className={`w-full py-3 rounded-lg font-semibold transition-all duration-300 ${role.bg} ${role.color} hover:bg-opacity-20 flex items-center justify-center gap-2`}>
-                           Log In
-                        </button>
-                     </Link>
-                     <Link to={role.signupPath} className="w-full">
                         <button className="w-full py-3 rounded-lg font-medium text-[--color-text-secondary] hover:text-[--color-text-primary] bg-transparent hover:bg-[--color-bg-elevated] transition-all duration-300">
-                           Create Account
+                           Manual Login
                         </button>
                      </Link>
                   </div>
                </GlassCard>
             </motion.div>
           ))}
+        </div>
+
+        {/* How It Works Section */}
+        <div className="w-full max-w-5xl">
+           <motion.div 
+             initial={{ opacity: 0, y: 30 }}
+             whileInView={{ opacity: 1, y: 0 }}
+             viewport={{ once: true }}
+             transition={{ duration: 0.6 }}
+             className="text-center mb-12"
+           >
+              <h2 className="text-3xl md:text-4xl font-heading font-bold mb-4">How it Works</h2>
+              <p className="text-[--color-text-secondary] max-w-2xl mx-auto">
+                Explore our fully functional end-to-end evaluation flow using the demo accounts. No signup required.
+              </p>
+           </motion.div>
+           
+           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
+              {/* Desktop connecting lines */}
+              <div className="hidden md:block absolute top-1/2 left-[15%] right-[15%] h-[2px] bg-gradient-to-r from-[--color-accent-violet]/0 via-[--color-accent-blue]/20 to-[--color-accent-violet]/0 -z-10"></div>
+              
+              <GlassCard className="p-6 relative">
+                 <div className="w-10 h-10 rounded-full bg-[--color-accent-violet] text-white flex items-center justify-center font-bold absolute -top-5 -left-5 shadow-[0_0_20px_rgba(155,109,255,0.4)]">1</div>
+                 <h3 className="text-xl font-heading font-bold mb-2 flex items-center gap-2 text-[--color-accent-violet]">Admin Creates Exam</h3>
+                 <p className="text-sm text-[--color-text-secondary] leading-relaxed">
+                   Administrators organize exams, upload question papers containing total marks and specific parts, and assign Answer Sheets to Teachers securely.
+                 </p>
+              </GlassCard>
+              
+              <GlassCard className="p-6 relative">
+                 <div className="w-10 h-10 rounded-full bg-[--color-accent-orange] text-white flex items-center justify-center font-bold absolute -top-5 -left-5 shadow-[0_0_20px_rgba(255,140,66,0.4)]">2</div>
+                 <h3 className="text-xl font-heading font-bold mb-2 flex items-center gap-2 text-[--color-accent-orange]">Teacher Evaluates</h3>
+                 <p className="text-sm text-[--color-text-secondary] leading-relaxed">
+                   Teachers log into their stunning Split-Screen Workspace, visualizing the student PDF Answer Sheet while directly grading questions side-by-side.
+                 </p>
+              </GlassCard>
+              
+              <GlassCard className="p-6 relative">
+                 <div className="w-10 h-10 rounded-full bg-[--color-accent-blue] text-white flex items-center justify-center font-bold absolute -top-5 -left-5 shadow-[0_0_20px_rgba(79,143,255,0.4)]">3</div>
+                 <h3 className="text-xl font-heading font-bold mb-2 flex items-center gap-2 text-[--color-accent-blue]">Student Monitors</h3>
+                 <p className="text-sm text-[--color-text-secondary] leading-relaxed">
+                   Students track their results, identify their subject proficiencies using interactive gamified Radar Charts, and communicate feedback to evaluation reviewers.
+                 </p>
+              </GlassCard>
+           </div>
         </div>
 
       </AnimatedPage>

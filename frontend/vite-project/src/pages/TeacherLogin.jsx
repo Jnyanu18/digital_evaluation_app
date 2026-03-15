@@ -119,12 +119,6 @@ const TeacherLogin = () => {
           </form>
 
           <div className="mt-8 pt-6 border-t border-[--color-border-default] space-y-4">
-            <p className="text-center text-sm text-[--color-text-muted]">
-              Don't have an account?{' '}
-              <Link to="/teacher/signup" className="text-[--color-accent-blue] hover:underline font-medium">
-                Sign up
-              </Link>
-            </p>
             <div className="flex gap-3 mt-4">
               <Link to="/student/login" className="flex-1">
                 <Button variant="secondary" size="sm" fullWidth>Student Login</Button>
