@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FiBook, FiChevronRight, FiAlertCircle } from "react-icons/fi";
+import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip as RechartsTooltip } from 'recharts';
 import Navbar from "../components/Navbar";
 import AnimatedPage from "../components/AnimatedPage";
 import { GlassCard } from "../components/ui/Card";
@@ -159,7 +160,7 @@ const StudentDashboard = () => {
                   )}
                </div>
 
-               <div className="flex-1 p-6 bg-[--color-bg-primary]/30 relative">
+               <div className="flex-1 p-6 bg-[--color-bg-primary]/30 relative flex flex-col lg:flex-row gap-6">
                   {loading ? (
                     <div className="absolute inset-0 flex items-center justify-center">
                        <div className="w-10 h-10 border-4 border-[--color-accent-blue]/20 border-t-[--color-accent-blue] rounded-full animate-spin"></div>
@@ -179,40 +180,89 @@ const StudentDashboard = () => {
                        </p>
                     </div>
                   ) : (
-                    <div className="space-y-4">
-                      {subjects.map((subject, index) => {
-                         const statusConfig = getStatusConfig(subject.status);
-                         return (
-                            <motion.div
-                              key={subject._id || index}
-                              initial={{ opacity: 0, y: 10 }}
-                              animate={{ opacity: 1, y: 0 }}
-                              transition={{ duration: 0.3, delay: index * 0.05 }}
-                              onClick={() => handleSubjectClick(subject._id)}
-                              className="group flex items-center justify-between p-4 rounded-xl bg-[--color-bg-elevated] border border-[--color-border-default] hover:border-[--color-accent-blue]/50 cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-[--color-accent-blue]/5"
-                            >
-                               <div className="flex items-center gap-4">
-                                  <div className="w-12 h-12 rounded-lg bg-[--color-bg-card] border border-[--color-border-default] flex items-center justify-center group-hover:bg-[--color-accent-blue]/10 group-hover:text-[--color-accent-blue] transition-colors">
-                                     <FiBook className="w-5 h-5 opacity-70 group-hover:opacity-100" />
-                                  </div>
-                                  <div>
-                                     <h4 className="text-lg font-heading font-semibold text-[--color-text-primary] group-hover:text-[--color-accent-blue] transition-colors">
-                                        {subject.subject?.subjectName || "Subject Name"}
-                                     </h4>
-                                     <div className="flex items-center mt-1">
-                                        <span className={`text-xs font-medium px-2 py-0.5 rounded border uppercase tracking-wider ${statusConfig.colorClass}`}>
-                                           {statusConfig.text}
-                                        </span>
-                                     </div>
-                                  </div>
+                    <>
+                      {/* Left Side: Subject List */}
+                      <div className="lg:w-1/2 space-y-4 overflow-y-auto">
+                        {subjects.map((subject, index) => {
+                           const statusConfig = getStatusConfig(subject.status);
+                           return (
+                              <motion.div
+                                key={subject._id || index}
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.3, delay: index * 0.05 }}
+                                onClick={() => handleSubjectClick(subject._id)}
+                                className="group flex items-center justify-between p-4 rounded-xl bg-[--color-bg-elevated] border border-[--color-border-default] hover:border-[--color-accent-blue]/50 cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-[--color-accent-blue]/5"
+                              >
+                                 <div className="flex items-center gap-4">
+                                    <div className="w-12 h-12 rounded-lg bg-[--color-bg-card] border border-[--color-border-default] flex items-center justify-center group-hover:bg-[--color-accent-blue]/10 group-hover:text-[--color-accent-blue] transition-colors">
+                                       <FiBook className="w-5 h-5 opacity-70 group-hover:opacity-100" />
+                                    </div>
+                                    <div>
+                                       <h4 className="text-lg font-heading font-semibold text-[--color-text-primary] group-hover:text-[--color-accent-blue] transition-colors">
+                                          {subject.subject?.subjectName || "Subject Name"}
+                                       </h4>
+                                       <div className="flex items-center mt-1">
+                                          <span className={`text-xs font-medium px-2 py-0.5 rounded border uppercase tracking-wider ${statusConfig.colorClass}`}>
+                                             {statusConfig.text}
+                                          </span>
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <div className="w-10 h-10 rounded-full flex items-center justify-center bg-[--color-bg-primary] border border-[--color-border-default] text-[--color-text-muted] group-hover:bg-[--color-accent-blue] group-hover:text-white group-hover:border-[--color-accent-blue] transition-all">
+                                    <FiChevronRight className="w-5 h-5" />
+                                 </div>
+                              </motion.div>
+                           );
+                        })}
+                      </div>
+
+                      {/* Right Side: Gamification Analytics (Radar Chart) */}
+                      <div className="lg:w-1/2 flex flex-col items-center justify-center pt-6 lg:pt-0 lg:pl-6 border-t lg:border-t-0 lg:border-l border-[--color-border-default]">
+                         <div className="w-full h-full min-h-[300px] flex flex-col items-center justify-center relative bg-gradient-to-b from-[--color-accent-violet]/5 to-transparent rounded-2xl border border-[--color-accent-violet]/10 overflow-hidden group p-4 gap-4">
+                            <h3 className="font-heading font-bold text-lg text-[--color-text-primary] text-center w-full relative z-10 flex items-center justify-center gap-2">
+                               <div className="w-2 h-2 rounded-full bg-violet-400 shadow-[0_0_10px_#a78bfa]"></div>
+                               Skill Proficiency 
+                            </h3>
+                            
+                            <div className="flex-[1_1_100%] w-full relative z-10 flex flex-col gap-4">
+                               <ResponsiveContainer width="100%" height="80%">
+                                  <RadarChart cx="50%" cy="50%" outerRadius="70%" data={
+                                     subjects.map(sub => ({
+                                        subject: (sub.subject?.subjectName || "Unknown").substring(0, 10),
+                                        score: sub.status === 'Evaluated' && sub.total_marks ? 100 : 
+                                               (sub.status === 'Pending' ? 50 : 20) // Simulated score for rendering demo curve
+                                     }))
+                                  }>
+                                     <PolarGrid stroke="rgba(255,255,255,0.1)" />
+                                     <PolarAngleAxis dataKey="subject" tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 11 }} />
+                                     <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
+                                     <Radar name="Performance" dataKey="score" stroke="#8b5cf6" strokeWidth={3} fill="#8b5cf6" fillOpacity={0.3} />
+                                     <RechartsTooltip 
+                                        contentStyle={{ backgroundColor: 'rgba(15,15,20,0.9)', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '12px', color: 'white' }}
+                                        itemStyle={{ color: '#a78bfa' }}
+                                     />
+                                  </RadarChart>
+                               </ResponsiveContainer>
+                               
+                               {/* Gamification Badges */}
+                               <div className="flex justify-center gap-3 mt-auto pb-2 relative z-10 h-[20%]">
+                                  <motion.div whileHover={{ scale: 1.1, translateY: -5 }} className="px-3 py-1.5 rounded-full bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/30 text-amber-300 text-xs font-bold leading-tight flex items-center gap-1.5 shadow-[0_0_15px_rgba(245,158,11,0.15)] backdrop-blur-md cursor-help" title="Top 10% in Computer Science">
+                                     <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>
+                                     Top 10%
+                                  </motion.div>
+                                  <motion.div whileHover={{ scale: 1.1, translateY: -5 }} className="px-3 py-1.5 rounded-full bg-gradient-to-r from-blue-500/20 to-cyan-500/20 border border-blue-500/30 text-blue-300 text-xs font-bold leading-tight flex items-center gap-1.5 shadow-[0_0_15px_rgba(59,130,246,0.15)] backdrop-blur-md cursor-help" title="Submitted all assignments early">
+                                     <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                     Early Bird
+                                  </motion.div>
                                </div>
-                               <div className="w-10 h-10 rounded-full flex items-center justify-center bg-[--color-bg-primary] border border-[--color-border-default] text-[--color-text-muted] group-hover:bg-[--color-accent-blue] group-hover:text-white group-hover:border-[--color-accent-blue] transition-all">
-                                  <FiChevronRight className="w-5 h-5" />
-                               </div>
-                            </motion.div>
-                         );
-                      })}
-                    </div>
+                            </div>
+                            
+                            {/* Decorative background glow */}
+                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-[--color-accent-violet] rounded-full blur-[100px] opacity-20 pointer-events-none group-hover:opacity-30 transition-opacity duration-700"></div>
+                         </div>
+                      </div>
+                    </>
                   )}
                </div>
             </GlassCard>

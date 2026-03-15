@@ -206,76 +206,96 @@ const EvaluateAnswerSheet = () => {
         </div>
 
         {/* Main Content: Split Layout */}
-        <div className="flex-1 flex flex-col lg:flex-row gap-6 min-h-0">
+        <div className="flex-1 flex flex-col lg:flex-row gap-6 min-h-0 relative">
           
-          {/* Left: PDF Viewer */}
-          <div className="flex-1 flex flex-col min-h-0 bg-[--color-bg-elevated] rounded-[--radius-large] border border-[--color-border-default] overflow-hidden relative group">
+          {/* Left: PDF Viewer (Split Screen 60%) */}
+          <div className="lg:w-[60%] flex-1 flex flex-col min-h-0 bg-[rgba(10,10,15,0.4)] backdrop-blur-3xl rounded-[--radius-large] border border-[rgba(255,255,255,0.08)] overflow-hidden relative group shadow-2xl">
+             {/* Header Bar for PDF */}
+             <div className="absolute top-0 inset-x-0 h-12 bg-gradient-to-b from-black/60 to-transparent pointer-events-none z-10 flex items-center px-4">
+                <span className="text-xs font-semibold uppercase tracking-wider text-zinc-400">Student Submission</span>
+             </div>
              {answerSheetUrl ? (
                <iframe
                  src={`${answerSheetUrl}#toolbar=0`}
-                 className="w-full h-full border-none object-contain bg-white/5"
+                 className="w-full h-full border-none object-contain pt-4"
                  title="Answer Sheet PDF Viewer"
                />
              ) : (
-                <div className="flex-1 flex items-center justify-center text-[--color-text-muted]">
-                   No answer sheet available.
+                <div className="flex-1 flex flex-col items-center justify-center text-[--color-text-muted] gap-3">
+                   <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center border border-white/10">
+                      <FiCheckCircle className="w-8 h-8 opacity-50" />
+                   </div>
+                   <p>No document attached to this submission.</p>
                 </div>
              )}
           </div>
 
-          {/* Right: Evaluation Panel */}
-          <div className="w-full lg:w-[450px] flex flex-col shrink-0 min-h-0">
-            <GlassCard className="flex-1 flex flex-col overflow-hidden p-0 h-full border-[--color-border-bright]">
+          {/* Right: Modern Grading Panel (Split Screen 40%) */}
+          <div className="lg:w-[40%] flex flex-col shrink-0 min-h-0">
+            <GlassCard className="flex-1 flex flex-col overflow-hidden p-0 h-full border-[rgba(255,255,255,0.08)] bg-[rgba(20,20,30,0.65)] backdrop-blur-2xl shadow-[0_8px_32px_rgba(0,0,0,0.4)] rounded-2xl">
               
               {/* Progress Bar Header */}
-              <div className="p-6 border-b border-[--color-border-default] bg bg-[--color-bg-card]/50 shrink-0">
-                 <div className="flex justify-between items-end mb-3">
-                    <h3 className="font-heading font-semibold text-lg text-[--color-text-primary]">
-                       Question Progress
+              <div className="p-6 border-b border-[rgba(255,255,255,0.05)] bg-[rgba(10,10,15,0.3)] shrink-0">
+                 <div className="flex justify-between items-end mb-4">
+                    <h3 className="font-heading font-semibold text-lg text-white">
+                       Question Panel
                     </h3>
-                    <span className="text-sm font-medium text-[--color-accent-blue]">
-                       {currentQuestionIndex + 1} of {questions.length}
+                    <span className="text-sm font-medium px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                       Question {currentQuestionIndex + 1} of {questions.length}
                     </span>
                  </div>
-                 <div className="h-2 w-full bg-[--color-bg-primary] rounded-full overflow-hidden border border-[--color-border-default] inset-shadow-sm">
+                 <div className="h-2 w-full bg-zinc-800/50 rounded-full overflow-hidden border border-white/5">
                     <motion.div 
-                      className="h-full bg-[--color-accent-blue] relative"
+                      className="h-full bg-gradient-to-r from-blue-500 to-violet-500 relative shadow-[0_0_10px_rgba(139,92,246,0.5)]"
                       initial={{ width: 0 }}
                       animate={{ width: `${progressPercent}%` }}
-                      transition={{ duration: 0.3 }}
+                      transition={{ duration: 0.4, ease: "easeOut" }}
                     >
-                      <div className="absolute top-0 right-0 bottom-0 left-0 bg-white/20" style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)' }}></div>
+                      <div className="absolute inset-0 bg-white/20" style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)' }}></div>
                     </motion.div>
                  </div>
               </div>
 
               {/* Question Form Area */}
-              <div className="flex-1 overflow-y-auto p-6 relative">
+              <div className="flex-1 overflow-y-auto p-8 relative">
                  <AnimatePresence mode="wait">
                    {questions.length > 0 ? (
                       <motion.div
                         key={currentQuestionIndex}
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -20 }}
-                        transition={{ duration: 0.2 }}
+                        initial={{ opacity: 0, y: 15 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -15 }}
+                        transition={{ duration: 0.25 }}
                         className="h-full flex flex-col"
                       >
-                         <div className="mb-6">
-                            <div className="inline-block px-3 py-1 rounded-md bg-[--color-accent-violet]/10 text-[--color-accent-violet] font-semibold text-sm mb-4 border border-[--color-accent-violet]/20">
-                               Max Marks: {currentQ?.maxMarks}
+                         <div className="mb-8">
+                            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-fuchsia-500/10 text-fuchsia-300 font-semibold text-xs tracking-wider uppercase mb-5 border border-fuchsia-500/20 shadow-inner">
+                               <span>Part {currentQ?.part || 'A'}</span>
+                               <span className="w-1 h-1 rounded-full bg-fuchsia-400"></span>
+                               <span>Max: {currentQ?.maxMarks} Marks</span>
                             </div>
-                            <h4 className="text-lg text-[--color-text-primary] leading-relaxed font-medium">
+                            <h4 className="text-xl text-zinc-100 leading-relaxed font-medium">
                                {currentQ?.questionText}
                             </h4>
                          </div>
 
-                         <div className="mt-8">
-                            <label className="block text-sm font-medium text-[--color-text-secondary] mb-3">
-                               Award Marks
-                            </label>
+                         <div className="mt-auto pt-6 border-t border-[rgba(255,255,255,0.05)]">
+                            <div className="flex items-center justify-between mb-4">
+                               <label className="text-sm font-medium text-zinc-400">
+                                  Award Marks
+                               </label>
+                               
+                               {/* AI Grading Mock Button */}
+                               {!marksSubmitted && (
+                                  <button type="button" className="text-xs flex items-center gap-1.5 font-medium px-3 py-1.5 rounded bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 border border-blue-500/20 transition-colors shadow-[0_0_10px_rgba(59,130,246,0.1)]">
+                                     <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                                     AI Suggestion
+                                  </button>
+                               )}
+                            </div>
                             
-                            <div className="relative">
+                            <div className="relative group">
+                               <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-violet-500 rounded-xl blur opacity-20 group-hover:opacity-40 transition-opacity duration-500"></div>
                                <input
                                   type="number"
                                   min="0"
@@ -283,38 +303,45 @@ const EvaluateAnswerSheet = () => {
                                   value={marksArray[currentQuestionIndex]?.obtainMarks ?? ""}
                                   onChange={handleMarkChange}
                                   disabled={marksSubmitted}
-                                  placeholder={`Enter marks (0-${currentQ?.maxMarks})`}
-                                  className="w-full bg-[--color-bg-primary] border-2 border-[--color-border-bright] rounded-xl px-5 py-4 text-xl font-bold text-[--color-text-primary] focus:outline-none focus:border-[--color-accent-blue] focus:ring-4 focus:ring-[--color-accent-blue]/20 transition-all font-sans disabled:opacity-50 disabled:cursor-not-allowed"
+                                  placeholder="0.0"
+                                  className="relative w-full bg-[rgba(15,15,20,0.8)] border border-[rgba(255,255,255,0.1)] rounded-xl px-6 py-5 text-3xl font-bold text-white focus:outline-none focus:border-blue-500/50 transition-all font-sans disabled:opacity-50 disabled:cursor-not-allowed shadow-inner z-10"
                                />
                                {marksArray[currentQuestionIndex]?.obtainMarks !== "" && (
-                                  <div className="absolute right-5 top-1/2 -translate-y-1/2 text-[--color-text-muted] font-medium pointer-events-none">
-                                     / {currentQ?.maxMarks}
+                                  <div className="absolute right-6 top-1/2 -translate-y-1/2 text-zinc-500 text-xl font-bold pointer-events-none z-20">
+                                     <span className="text-zinc-600 font-normal mr-1">/</span> {currentQ?.maxMarks}
                                   </div>
                                )}
                             </div>
                             {marksArray[currentQuestionIndex]?.obtainMarks > currentQ?.maxMarks && (
-                               <p className="text-[--color-accent-red] text-sm mt-3 flex items-center gap-1.5">
-                                 <span className="w-1.5 h-1.5 rounded-full bg-[--color-accent-red]"></span> Cannot exceed max marks.
-                               </p>
+                               <motion.p 
+                                 initial={{ opacity: 0, height: 0 }}
+                                 animate={{ opacity: 1, height: 'auto' }}
+                                 className="text-red-400 text-sm mt-3 flex items-center gap-2 bg-red-400/10 px-3 py-2 rounded border border-red-400/20"
+                               >
+                                 <FiAlertCircle className="shrink-0" /> Exceeds maximum marks ({currentQ?.maxMarks})
+                               </motion.p>
                             )}
                          </div>
 
                       </motion.div>
                    ) : (
-                      <div className="flex items-center justify-center h-full text-[--color-text-muted]">
-                         No questions found for this paper.
+                      <div className="flex flex-col items-center justify-center h-full text-zinc-500 gap-3">
+                         <div className="w-12 h-12 rounded-full bg-zinc-800/50 border border-zinc-700/50 flex items-center justify-center">
+                            <FiBook className="w-5 h-5 opacity-50" />
+                         </div>
+                         <p>Loading questions...</p>
                       </div>
                    )}
                  </AnimatePresence>
               </div>
 
               {/* Navigation Footer */}
-              <div className="p-6 border-t border-[--color-border-default] bg bg-[--color-bg-card]/50 shrink-0 flex gap-4">
+              <div className="p-6 border-t border-[rgba(255,255,255,0.05)] bg-[rgba(10,10,15,0.4)] shrink-0 flex gap-4">
                  <Button
                    variant="secondary"
                    onClick={handlePreviousQuestion}
                    disabled={currentQuestionIndex === 0}
-                   className="flex-1"
+                   className="flex-1 bg-white/5 border-white/10 hover:bg-white/10 h-12"
                  >
                    <FiChevronLeft className="w-5 h-5 mr-1" /> Previous
                  </Button>
@@ -323,7 +350,7 @@ const EvaluateAnswerSheet = () => {
                    variant="secondary"
                    onClick={handleNextQuestion}
                    disabled={currentQuestionIndex === questions.length - 1}
-                   className="flex-1"
+                   className="flex-1 border-white/10 bg-gradient-to-r hover:from-blue-600/20 hover:to-violet-600/20 h-12 transition-all duration-300"
                  >
                    Next <FiChevronRight className="w-5 h-5 ml-1" />
                  </Button>

@@ -86,8 +86,15 @@ const TeacherDashboard = () => {
 
   if (!dashboardData) {
     return (
-      <div className="flex justify-center items-center h-screen bg-zinc-800 text-white">
-        Loading...
+      <div className="bg-[--color-bg-primary] w-full h-screen text-white overflow-hidden">
+        <Navbar />
+        <div className="dashboard-container p-8 pt-32 max-w-7xl mx-auto">
+           <div className="skeleton-box h-32 w-full rounded-2xl mb-6"></div>
+           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="skeleton-box h-80 rounded-2xl"></div>
+              <div className="skeleton-box h-80 rounded-2xl"></div>
+           </div>
+        </div>
       </div>
     );
   }

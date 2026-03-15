@@ -45,29 +45,51 @@ const LandingPage = () => {
   return (
     <div className="min-h-screen bg-[--color-bg-primary] text-[--color-text-primary] flex flex-col relative overflow-hidden">
       
-      {/* Background Decorative Blobs */}
-      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-[--color-accent-blue] opacity-5 rounded-full blur-[120px] pointer-events-none"></div>
-      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-[--color-accent-violet] opacity-5 rounded-full blur-[120px] pointer-events-none"></div>
+      {/* Dynamic Background mesh & Grid */}
+      <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay pointer-events-none"></div>
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_10%,transparent_100%)] pointer-events-none"></div>
+      
+      <div className="absolute top-[-20%] left-[-10%] w-[60vw] h-[60vw] max-w-[800px] max-h-[800px] bg-blue-600/20 rounded-full blur-[120px] pointer-events-none animate-pulse" style={{ animationDuration: '8s' }}></div>
+      <div className="absolute bottom-[-20%] right-[-10%] w-[60vw] h-[60vw] max-w-[800px] max-h-[800px] bg-violet-600/20 rounded-full blur-[120px] pointer-events-none animate-pulse" style={{ animationDuration: '10s' }}></div>
+      <div className="absolute top-[30%] left-[40%] w-[40vw] h-[40vw] max-w-[600px] max-h-[600px] bg-fuchsia-600/10 rounded-full blur-[100px] pointer-events-none animate-pulse" style={{ animationDuration: '12s' }}></div>
 
-      <AnimatedPage className="container mx-auto px-4 flex-1 flex flex-col items-center justify-center py-20 z-10">
+      <AnimatedPage className="container mx-auto px-4 flex-1 flex flex-col items-center justify-center py-20 z-10 relative">
         
         {/* Header Section */}
-        <div className="text-center max-w-3xl mb-16">
+        <div className="text-center max-w-4xl mb-20">
            <motion.div
-             initial={{ scale: 0.9, opacity: 0 }}
-             animate={{ scale: 1, opacity: 1 }}
-             transition={{ duration: 0.5 }}
-             className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[--color-bg-elevated] border border-[--color-border-default] mb-6 text-sm font-medium text-[--color-text-secondary]"
+             initial={{ scale: 0.9, opacity: 0, y: 20 }}
+             animate={{ scale: 1, opacity: 1, y: 0 }}
+             transition={{ duration: 0.6, ease: "easeOut" }}
+             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.1)] mb-8 text-sm font-semibold text-zinc-300 backdrop-blur-md shadow-[0_0_20px_rgba(255,255,255,0.05)]"
            >
-              <span className="w-2 h-2 rounded-full bg-[--color-accent-green] animate-pulse"></span>
-              Platform Active
+              <span className="relative flex h-3 w-3 mr-1">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+              </span>
+              Digital Evaluation Platform Active
            </motion.div>
-           <h1 className="text-5xl md:text-6xl font-heading font-extrabold mb-6 leading-tight tracking-tight">
-             Digital <span className="text-transparent bg-clip-text bg-gradient-to-r from-[--color-accent-blue] to-[--color-accent-violet]">Evaluation</span> System
-           </h1>
-           <p className="text-lg md:text-xl text-[--color-text-secondary] leading-relaxed max-w-2xl mx-auto">
-             A modern, streamlined platform for academic assessments. Select your role to securely log in or register a new account.
-           </p>
+           
+           <motion.h1 
+             initial={{ opacity: 0, y: 20 }}
+             animate={{ opacity: 1, y: 0 }}
+             transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
+             className="text-6xl md:text-7xl lg:text-8xl font-heading font-extrabold mb-8 leading-[1.1] tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-white via-zinc-200 to-zinc-500 drop-shadow-sm"
+           >
+             Next-Gen <br className="hidden md:block"/>
+             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-violet-400 to-fuchsia-400 drop-shadow-[0_0_30px_rgba(139,92,246,0.3)]">
+               Evaluation
+             </span> System
+           </motion.h1>
+           
+           <motion.p 
+             initial={{ opacity: 0, y: 20 }}
+             animate={{ opacity: 1, y: 0 }}
+             transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
+             className="text-lg md:text-xl text-zinc-400 leading-relaxed max-w-2xl mx-auto font-medium"
+           >
+             Experience an ultra-modern workspace for academic assessments. Leverage real-time analytics and seamless workflows constructed for students, teachers, and admins.
+           </motion.p>
         </div>
 
         {/* Roles Grid */}

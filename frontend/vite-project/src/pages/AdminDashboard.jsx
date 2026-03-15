@@ -11,6 +11,7 @@ import AnswerPaperForm from "../components/AnswerPaperForm";
 import AnimatedPage from "../components/AnimatedPage";
 import { GlassCard } from "../components/ui/Card";
 import { Button } from "../components/ui/Button";
+import AdvancedAnalytics from "../components/AdvancedAnalytics";
 
 const AdminDashboard = () => {
   const [dashboardData, setDashboardData] = useState(null);
@@ -43,8 +44,36 @@ const AdminDashboard = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[--color-bg-primary] flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-[--color-accent-blue]/20 border-t-[--color-accent-blue] rounded-full animate-spin"></div>
+      <div className="min-h-screen bg-[--color-bg-primary] text-[--color-text-primary] pb-12">
+        <Navbar />
+        <div className="container mx-auto px-4 pt-32 max-w-7xl">
+          <div className="mb-8 border-b border-[rgba(255,255,255,0.05)] pb-6 flex justify-between gap-4">
+             <div>
+                <div className="skeleton-box h-10 w-64 mb-4"></div>
+                <div className="skeleton-box h-4 w-96"></div>
+             </div>
+          </div>
+          <div className="mb-8">
+             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="skeleton-box h-32 rounded-2xl"></div>
+                <div className="skeleton-box h-32 rounded-2xl"></div>
+                <div className="skeleton-box h-32 rounded-2xl"></div>
+                <div className="skeleton-box h-32 rounded-2xl"></div>
+             </div>
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2 space-y-6">
+               <div className="skeleton-box h-80 rounded-2xl"></div>
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="skeleton-box h-64 rounded-2xl"></div>
+                  <div className="skeleton-box h-64 rounded-2xl"></div>
+               </div>
+            </div>
+            <div className="lg:col-span-1">
+               <div className="skeleton-box h-96 rounded-2xl"></div>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
@@ -67,9 +96,11 @@ const AdminDashboard = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Main Content Area - Status Panels */}
+        {/* Main Content Area - Status Panels and Analytics */}
           <div className="lg:col-span-2 space-y-6 flex flex-col">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1">
+            <AdvancedAnalytics dashboardData={dashboardData} />
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <AnswerPapersStatus data={dashboardData?.answerPapersStatus} />
               <FeedbackStatus data={dashboardData?.feedbackMessagesStatus} />
             </div>

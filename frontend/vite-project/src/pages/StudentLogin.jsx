@@ -97,8 +97,22 @@ const StudentLogin = () => {
               </button>
             </div>
 
-            <Button type="submit" fullWidth isLoading={isLoading} className="mt-2">
+            <Button type="submit" fullWidth isLoading={isLoading} className="mt-2 text-md h-12">
               Sign In
+            </Button>
+            
+            <Button 
+              type="button" 
+              fullWidth 
+              variant="secondary"
+              className="mt-2 border border-green-500/30 hover:bg-green-500/10 text-green-300 h-10 shadow-[0_0_15px_rgba(34,197,94,0.15)]"
+              onClick={() => {
+                setEmail("student@demo.com");
+                setPassword("student123");
+                addToast({ title: "Demo Credentials Loaded", description: "Click 'Sign In' to continue.", status: "success" });
+              }}
+            >
+              Load Demo Student Credentials
             </Button>
           </form>
 

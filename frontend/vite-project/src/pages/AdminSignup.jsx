@@ -52,9 +52,10 @@ const AdminSignup = () => {
       }
     } catch (error) {
       console.error("Registration error:", error);
+      const errorMessage = error.response?.data?.errors?.[0]?.msg || error.response?.data?.message || "Something went wrong during signup.";
       addToast({ 
         title: "Registration Failed", 
-        description: error.response?.data?.message || "Something went wrong during signup.", 
+        description: errorMessage, 
         status: "error" 
       });
     } finally {

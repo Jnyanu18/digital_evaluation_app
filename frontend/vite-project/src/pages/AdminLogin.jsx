@@ -96,8 +96,22 @@ const AdminLogin = () => {
               </button>
             </div>
 
-            <Button type="submit" fullWidth isLoading={isLoading} className="mt-2">
+            <Button type="submit" fullWidth isLoading={isLoading} className="mt-2 text-md h-12">
               Sign In
+            </Button>
+            
+            <Button 
+              type="button" 
+              fullWidth 
+              variant="secondary"
+              className="mt-2 border border-violet-500/30 hover:bg-violet-500/10 text-violet-300 h-10 shadow-[0_0_15px_rgba(139,92,246,0.15)]"
+              onClick={() => {
+                setEmail("admin@demo.com");
+                setPassword("admin123");
+                addToast({ title: "Demo Credentials Loaded", description: "Click 'Sign In' to continue.", status: "success" });
+              }}
+            >
+              Load Demo Admin Credentials
             </Button>
           </form>
 
