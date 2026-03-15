@@ -1,7 +1,6 @@
 const teacherModel = require("../models/teacherModel");
 const teacherServer = require("../services/teacherServer");
 const { validationResult } = require("express-validator");
-const { uploadOnCloudinary } = require("../utils/cloudinaryUtils");
 const blackListTokenModel = require("../models/blackListTokenModel");
 
 module.exports.registerTeacher = async (req, res, next) => {
@@ -23,14 +22,7 @@ module.exports.registerTeacher = async (req, res, next) => {
   let avatarUrl = null;
 
   if (avatar) {
-    // Upload avatar to Cloudinary
-    const avatarUploadResponse = await uploadOnCloudinary(
-      avatar.path,
-      "avatar",
-      avatar.mimetype
-    );
-    console.log(avatarUploadResponse);
-    avatarUrl = avatarUploadResponse.url;
+    avatarUrl = avatar.location; // S3 URL returned by multer-s3
   }
 
   const hashedPassword = await teacherModel.hashPassword(password);

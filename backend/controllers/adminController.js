@@ -7,7 +7,6 @@ const feedbackModel = require('../models/feedbackModel');
 const adminServer = require('../services/adminServer');
 const { validationResult } = require('express-validator');
 const blackListTokenModel = require('../models/blackListTokenModel');
-const { uploadOnCloudinary } = require("../utils/cloudinaryUtils");
 const examModel = require('../models/examModel');
 
 module.exports.registerAdmin = async (req, res, next) => {
@@ -31,13 +30,7 @@ module.exports.registerAdmin = async (req, res, next) => {
         let avatarUrl = null;
 
         if (avatar) {
-            // Upload avatar to Cloudinary
-            const avatarUploadResponse = await uploadOnCloudinary(avatar.path);
-            if (avatarUploadResponse && avatarUploadResponse.url) {
-                avatarUrl = avatarUploadResponse.url;
-            } else {
-                return res.status(500).json({ message: "Failed to upload avatar" });
-            }
+            avatarUrl = avatar.location; // S3 URL returned by multer-s3
         }
 
         const hashedPassword = await adminModel.hashPassword(password);

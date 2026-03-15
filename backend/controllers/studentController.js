@@ -1,7 +1,6 @@
 const studentModel = require("../models/studentModel");
 const studentServer = require("../services/studentServer");
 const { validationResult } = require("express-validator");
-const { uploadOnCloudinary } = require("../utils/cloudinaryUtils");
 const blackListTokenModel = require("../models/blackListTokenModel");
 const sectionModel = require("../models/sectionModel");
 
@@ -31,10 +30,7 @@ module.exports.registerStudent = async (req, res, next) => {
     let avatarUrl = null;
 
     if (avatar) {
-      // Upload avatar to Cloudinary
-      const avatarUploadResponse = await uploadOnCloudinary(avatar.path, avatar.mimetype);
-      console.log(avatarUploadResponse);
-      avatarUrl = avatarUploadResponse.url;
+      avatarUrl = avatar.location; // S3 URL returned by multer-s3
     }
 
     const hashedPassword = await studentModel.hashPassword(password);
